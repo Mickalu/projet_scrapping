@@ -4,7 +4,6 @@ Created on Wed Apr 29 18:59:00 2020
 
 @author: Thomas
 """
-
 import requests
 from bs4 import BeautifulSoup
 
@@ -14,3 +13,4 @@ soup = BeautifulSoup(page.text, 'lxml')
 
 element = soup.find('span', {'class' : 'c-instrument c-instrument--last'})
 print(element.text)
+print(element)
