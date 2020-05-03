@@ -11,4 +11,8 @@ import matplotlib.pyplot as plt
 
 dataFrame = pd.read_csv("bitcoin_value.csv")
 
-plt.plot(dataFrame)
+dataframe_date = dataFrame['date']
+dataframe_bitcoin_value = dataFrame['bitcoin_value']
+
+plt.plot(dataframe_date, dataframe_bitcoin_value)
+plt.show()

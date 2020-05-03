@@ -12,7 +12,7 @@ import json
 
 number_new_value = 5
 dictionary_date_scrapping = {}
-dictionary_date_scrapping["date"] = "bitcoin value"
+dictionary_date_scrapping["date"] = "bitcoin_value"
 
 for i in range(0, number_new_value):
     print(i)
