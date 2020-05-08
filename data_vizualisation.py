@@ -13,8 +13,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 app = tk.Tk()
 
 # Changement of the title and the icon
-app.title("Bitcoin value BTC/EUR")
-app.iconphoto(False, tk.PhotoImage(file="icon.gif"))
+#app.title("Bitcoin value BTC/EUR")
+#app.iconphoto(False, tk.PhotoImage(file="icon.gif"))
 #app.tk.call('wm', 'iconphoto', app._w, tk.PhotoImage(file="icon.gif")) //Autre méthode
 
 # Creation of frames
@@ -27,14 +27,13 @@ frame_right.pack(side="left", expand=True)
 
 # Creation of widgets
 fig = Figure()
-subplot_1 = fig.add_subplot(1,1,1)
-subplot_1.set_title("Bitcoin Value BTC/EUR")
-subplot_1.set_xlabel("Date")
-subplot_1.set_ylabel("BTC/EUR")
+ax = fig.add_subplot(1,1,1)
+ax.plot([], [])
+ax.set_title("Bitcoin Value BTC/EUR")
+ax.set_xlabel("Date")
+ax.set_ylabel("BTC/EUR")
 canvas = FigureCanvasTkAgg(fig, master=frame_left)  
 canvas.get_tk_widget().pack(fill="both", expand=True)
 
-button = tk.Button(frame_right, text="Launch Scraping")
-button.pack()
-
-app.mainloop()
+button_launch_scraping = tk.Button(frame_right, text="Launch Scraping")
+button_launch_scraping.pack()
