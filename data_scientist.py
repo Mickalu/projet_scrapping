@@ -1,18 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri May  1 19:02:20 2020
+Created on Thu May  7 23:05:25 2020
 
-@author: lucas
+@author: Thomas
 """
 
+# Import necessary libraries
+import requests
+from bs4 import BeautifulSoup
+import csv
+from time import sleep
+import datetime
+from random import randint
 
-import pandas as pd
-import matplotlib.pyplot as plt
+# Clean the csv file
+with open("bitcoin_value.csv", "w", newline="") as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow(["date", "bitcoin_value"])
 
-dataFrame = pd.read_csv("bitcoin_value.csv")
+def scraping():
+    """Function for scraping the bitcoin value on the boursorama website"""
 
-dataframe_date = dataFrame['date']
-dataframe_bitcoin_value = dataFrame['bitcoin_value']
+    # Page to scrap and collecting bitcoin value
+    page_scrap = requests.get("https://www.boursorama.com/bourse/devises/taux-de-change-bitcoin-euro-BTC-EUR/")
+    soup = BeautifulSoup(page_scrap.text, 'lxml')
+    bitcoin_value = soup.find('span', {'class' : 'c-instrument c-instrument--last'}).text
 
-plt.plot(dataframe_date, dataframe_bitcoin_value)
-plt.show()
+    # Collect date
+    date_now = datetime.datetime.today()
+
+    # Saving data in the csv file
+    with open("bitcoin_value.csv", "a", newline="") as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerow([date_now, bitcoin_value])
+    
+    sleep(randint(10,20))
