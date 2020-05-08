@@ -9,7 +9,69 @@ Created on Thu May  7 23:04:40 2020
 import tkinter as tk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import pandas as pd
+from threading import Thread
+import data_scientist as ds
 
+# Compteur
+GLOBAL_COUNTER = 1
+
+update_scrap = False
+    
+def refresh():
+    global update_scrap
+    global GLOBAL_COUNTER
+    
+    # Read the csv file
+    df_bitcoin = pd.read_csv("bitcoin_value.csv")
+    """
+    global update_graph    
+    if not update_graph:
+        print("je m'arrete")
+        return
+    """
+    if update_scrap:
+        print("I'm refresh")
+        ax.lines.pop(0)  # detruit l'ancienne ligne
+        
+        GLOBAL_COUNTER += 1
+        ax.plot(df_bitcoin["date"][:GLOBAL_COUNTER], df_bitcoin["bitcoin_value"][:GLOBAL_COUNTER])  # créer une nouvelle ligne
+        canvas.draw()
+        app.after(2000, refresh) 
+    
+    else:
+        return
+    
+    
+    
+def on_click_launch_update_plot(event):
+    global update_scrap
+    
+    if update_scrap:
+        update_scrap = False
+        print("peut pas")
+        button_updating_scrap_var.set("Launch scrap")
+        return 
+        
+    else:
+        update_scrap = True
+        refresh()
+        button_updating_scrap_var.set("Stop scrap")
+        global thread_1
+        
+        thread_scrapping = Thread(target=tread_scrapping)
+        thread_scrapping.start()
+        
+def tread_scrapping():
+    while True:
+        global update_scrap
+        
+        if update_scrap:
+            ds.scraping()
+        else:
+            break
+
+        
 app = tk.Tk()
 
 # Changement of the title and the icon
@@ -29,11 +91,20 @@ frame_right.pack(side="left", expand=True)
 fig = Figure()
 ax = fig.add_subplot(1,1,1)
 ax.plot([], [])
+
 ax.set_title("Bitcoin Value BTC/EUR")
 ax.set_xlabel("Date")
 ax.set_ylabel("BTC/EUR")
 canvas = FigureCanvasTkAgg(fig, master=frame_left)  
 canvas.get_tk_widget().pack(fill="both", expand=True)
 
-button_launch_scraping = tk.Button(frame_right, text="Launch Scraping")
+button_updating_scrap_var = tk.StringVar()
+button_launch_scraping = tk.Button(frame_right, textvariable = button_updating_scrap_var)
+button_updating_scrap_var.set("Launch scrap")
 button_launch_scraping.pack()
+
+button_launch_scraping.bind("<ButtonRelease-1>", on_click_launch_update_plot)
+
+app.mainloop()
+
+

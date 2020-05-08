@@ -30,6 +30,5 @@ def refresh():
     dv.app.after(2000, refresh) 
 
 
-refresh()
 
-dv.app.mainloop()
+

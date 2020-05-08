@@ -13,12 +13,14 @@ from time import sleep
 import datetime
 from random import randint
 
-# Clean the csv file
-with open("bitcoin_value.csv", "w", newline="") as csv_file:
-        writer = csv.writer(csv_file)
-        writer.writerow(["date", "bitcoin_value"])
+
+# # Clean the csv file
+# with open("bitcoin_value.csv", "w", newline="") as csv_file:
+#         writer = csv.writer(csv_file)
+#         writer.writerow(["date", "bitcoin_value"])
 
 def scraping():
+    
     """Function for scraping the bitcoin value on the boursorama website"""
 
     # Page to scrap and collecting bitcoin value
@@ -35,3 +37,7 @@ def scraping():
         writer.writerow([date_now, bitcoin_value])
     
     sleep(randint(10,20))
+    
+    
+    
+    
