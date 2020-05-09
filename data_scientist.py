@@ -28,7 +28,7 @@ def scraping():
     bitcoin_value = soup.find('span', {'class' : 'c-instrument c-instrument--last'}).text
 
     # Collect date
-    date_now = datetime.datetime.today()
+    date_now = str(datetime.datetime.today())[:19]
 
     # Saving data in the csv file
     with open("bitcoin_value.csv", "a", newline="") as csv_file:
