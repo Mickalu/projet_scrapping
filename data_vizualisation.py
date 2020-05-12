@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from threading import Thread
 import data_scientist as ds
-import matplotlib.pyplot as plt
+from statistics import mean
 
 # Constant
 GLOBAL_COUNTER = 1
@@ -22,7 +22,7 @@ def refresh():
     global update_scrap
     global GLOBAL_COUNTER
     
-    df_bitcoin = pd.read_csv("bitcoin_value.csv")
+    df_bitcoin = pd.read_csv("bitcoin_value.csv", sep=";")
     """
     global update_graph    
     if not update_graph:
@@ -39,6 +39,7 @@ def refresh():
         ax.set_xticklabels(df_bitcoin["date"][:GLOBAL_COUNTER], rotation=90)
         
         canvas.draw()
+        statistic_information()
         app.after(1000, refresh) 
     
     else:
@@ -72,13 +73,27 @@ def scrap_thread():
             ds.scraping()
         else:
             break
+
+def statistic_information():
+    df_bitcoin = pd.read_csv("bitcoin_value.csv", sep=";")
+    #df = df_bitcoin.apply(pd.to_numeric, errors='coerce')
+    if len(df_bitcoin) != 0:
+        label_text_last_value_var.set("Last value : " + str(df_bitcoin["bitcoin_value"][len(df_bitcoin)-1]))
+        label_text_mean_var.set("Mean : " + str(df_bitcoin["bitcoin_value"].mean())[:7])
+        label_text_min_var.set("Min : " + str(df_bitcoin["bitcoin_value"].min()))
+        label_text_max_var.set("Max : " + str(df_bitcoin["bitcoin_value"].max()))
+    else:
+        label_text_last_value_var.set("Last value : ")
+        label_text_mean_var.set("Mean : ")
+        label_text_min_var.set("Min : ")
+        label_text_max_var.set("Max : ")
         
 app = tk.Tk()
 
 # Changement of the title and the icon
 app.title("Bitcoin value BTC/EUR")
-# app.iconphoto(False, tk.PhotoImage(file="icon.gif"))
-# #app.tk.call('wm', 'iconphoto', app._w, tk.PhotoImage(file="icon.gif")) //Autre méthode
+app.iconphoto(False, tk.PhotoImage(file="icon.gif"))
+# app.tk.call('wm', 'iconphoto', app._w, tk.PhotoImage(file="icon.gif")) //Autre méthode
 
 # Creation of frames
 frame_left = tk.Frame(app)
@@ -123,23 +138,25 @@ ax.set_ylabel("BTC/EUR")
 canvas = FigureCanvasTkAgg(fig, master=frame_left)  
 canvas.get_tk_widget().pack(fill="both", expand=True)
 
-label_text_last_value_var = "Last value : ", 0
-label_text_mean_var = "Average : ", 0
-label_text_min_var = "Min : ", 0
-label_text_max_var = "Max : ", 0
+label_text_last_value_var = tk.StringVar()
+label_text_mean_var = tk.StringVar()
+label_text_min_var = tk.StringVar()
+label_text_max_var = tk.StringVar()
 
 # Statistic
-label_text_last_value = tk.Label(frame_center_last_value, text = "Last value : ")
+label_text_last_value = tk.Label(frame_center_last_value, textvariable = label_text_last_value_var )
 label_text_last_value.pack(side="left")
 
-label_text_mean = tk.Label(frame_center_mean, text = "Average : ")
+label_text_mean = tk.Label(frame_center_mean, textvariable = label_text_mean_var)
 label_text_mean.pack(side="left")
 
-label_text_min = tk.Label(frame_center_min, text = "Min : ")
+label_text_min = tk.Label(frame_center_min, textvariable = label_text_min_var)
 label_text_min.pack(side="left")
 
-label_text_max = tk.Label(frame_center_max, text = "Max : ")
+label_text_max = tk.Label(frame_center_max, textvariable = label_text_max_var)
 label_text_max.pack(side="left")
+
+statistic_information()
 
 # Button
 button_updating_scrap_var = tk.StringVar()
