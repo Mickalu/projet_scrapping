@@ -12,7 +12,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from threading import Thread
 import data_scientist as ds
-from statistics import mean
 
 # Constant
 GLOBAL_COUNTER = 1
@@ -87,6 +86,11 @@ def statistic_information():
         label_text_mean_var.set("Mean : ")
         label_text_min_var.set("Min : ")
         label_text_max_var.set("Max : ")
+        
+def on_closing():
+    global update_graph
+    update_graph = False
+    app.destroy()
         
 app = tk.Tk()
 
@@ -167,6 +171,8 @@ button_updating_scrap_var.set("Launch scrap")
 
 button_launch_scraping.pack()
 button_launch_scraping.bind("<ButtonRelease-1>", on_click_launch_update_plot)
+
+app.protocol("WM_DELETE_WINDOW", on_closing)
 
 app.mainloop()
 
