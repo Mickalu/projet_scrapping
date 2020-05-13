@@ -5,7 +5,7 @@ Created on Thu May  7 23:05:25 2020
 @author: Thomas
 """
 
-# Import necessary libraries
+### LIBRARIES #################################################################
 import requests
 from bs4 import BeautifulSoup
 import csv
@@ -15,10 +15,15 @@ from random import randint
 
 
 # Clean the csv file
-# with open("bitcoin_value.csv", "w", newline="") as csv_file:
-#     writer = csv.writer(csv_file, delimiter=";")
-#     writer.writerow(["date", "bitcoin_value"])
+def delete_data():
+    """Delete Data in the csv file"""
+    
+    with open("bitcoin_value.csv", "w", newline="") as csv_file:
+        writer = csv.writer(csv_file, delimiter=";")
+        writer.writerow(["date", "bitcoin_value"])
 
+
+### FUNCTION ##################################################################
 def scraping():
     """Function for scraping the bitcoin value on the boursorama website"""
 
@@ -35,4 +40,4 @@ def scraping():
         writer = csv.writer(csv_file, delimiter=";")
         writer.writerow([date_now, bitcoin_value[0]+bitcoin_value[2:]])
     
-    sleep(randint(10,20))
+    sleep(randint(10,15))
