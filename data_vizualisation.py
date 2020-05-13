@@ -2,7 +2,7 @@
 """
 Created on Thu May  7 23:04:40 2020
 
-@author: Thomas
+@author: Thomas BONGIBAULT, Lucas MICHAELI
 """
 
 ### LIBRARIES #################################################################
@@ -18,7 +18,7 @@ GLOBAL_COUNTER = 1
 
 ### FLAG ###
 update_scrap = False
-   
+flag_delete = False   
 
 ### FUNCTIONS BINDED ##########################################################    
 def on_click_launch_update_plot(event):
@@ -30,23 +30,31 @@ def on_click_launch_update_plot(event):
         update_scrap = False
         thread_scraping.join()
         button_updating_scrap_var.set("Launch scrap")
+        button_delete_data.pack()
         return 
         
     else:
         update_scrap = True
         refresh()
         button_updating_scrap_var.set("Stop scrap")
-        
+        button_delete_data.pack_forget()
         #global thread_scraping
         
         thread_scraping = Thread(target = scrap_thread)
         thread_scraping.start()
 
+def on_click_delete_data(event):
+    ds.delete_data()
+    ax.clear()
+    ax.plot([],[])
+    print("Delete data done")
+
 def on_closing():
     global update_scrap
     global thread_scraping
-    update_scrap = False
-    thread_scraping.join()
+    if update_scrap:
+        update_scrap = False
+        thread_scraping.join()
     app.destroy()
 
 
@@ -58,11 +66,11 @@ def refresh():
     df_bitcoin = pd.read_csv("bitcoin_value.csv", sep=";")
     
     if update_scrap:
-        print("I'm refresh")
-        ax.lines.pop(0)  # detruit l'ancienne ligne
+        print("Refresh...")
+        ax.lines.pop(0) 
         
         GLOBAL_COUNTER += 1
-        ax.plot(df_bitcoin["date"][:GLOBAL_COUNTER], df_bitcoin["bitcoin_value"][:GLOBAL_COUNTER], color="r")  # créer une nouvelle ligne
+        ax.plot(df_bitcoin["date"][:GLOBAL_COUNTER], df_bitcoin["bitcoin_value"][:GLOBAL_COUNTER], color="r")  
         
         ax.set_xticklabels(df_bitcoin["date"][:GLOBAL_COUNTER], rotation=45)
         
@@ -71,12 +79,12 @@ def refresh():
         app.after(1000, refresh) 
     
     else:
-        print("je m'arrête")
+        print("Stop !")
         return
         
         
 def scrap_thread():
-    print("je lance mon thread")
+    print("Launch my thread")
     while True:
         global update_scrap
         
@@ -84,7 +92,7 @@ def scrap_thread():
             ds.scraping()
         else:
             break
-    print("j'ai fini mon thread")
+    print("Finish my thread")
 
 def statistic_information():
     df_bitcoin = pd.read_csv("bitcoin_value.csv", sep=";")
@@ -169,13 +177,18 @@ button_launch_scraping = tk.Button(frame_right, textvariable = button_updating_s
 button_launch_scraping.pack()
 button_updating_scrap_var.set("Launch scrap")
 
+button_delete_data_var = tk.StringVar()
+button_delete_data = tk.Button(frame_right, textvariable = button_delete_data_var)
+button_delete_data.pack()
+button_delete_data_var.set("Delete data")
+
 ### BINDING ###################################################################
 button_launch_scraping.bind("<ButtonRelease-1>", on_click_launch_update_plot)
+button_delete_data.bind("<ButtonRelease-1>", on_click_delete_data)
 app.protocol("WM_DELETE_WINDOW", on_closing)
-
 
 ### LAUNCH APP ################################################################
 app.mainloop()
-ds.delete_data()
+#ds.delete_data()
 
 
